@@ -1,0 +1,31 @@
+CREATE OR REPLACE PACKAGE umair_fooditem_api AS
+
+  -- create foodItem
+  PROCEDURE INSERT_FOODITEM(item_name_        IN VARCHAR2,
+                            available_qty_kg_ IN NUMBER,
+                            scrapped_qty_kg_  IN NUMBER,
+                            reserved_qty_kg_  IN NUMBER);
+
+  -- update foodItem
+  PROCEDURE UPDATE_FOODITEM(item_id_           IN NUMBER,
+                            new_item_name_     IN VARCHAR2,
+                            new_available_qty_ IN NUMBER,
+                            new_scrapped_qty_  IN NUMBER,
+                            new_reserved_qty_  IN NUMBER);
+
+  -- delete foodItem
+  PROCEDURE DELETE_FOODITEM(item_id_ IN NUMBER);
+
+  -- function to get item name attribute
+  FUNCTION get_fooditem_name(item_id_ IN NUMBER) RETURN VARCHAR2;
+
+  -- function to get available quantity
+  FUNCTION get_available_qty(item_id_ IN NUMBER) RETURN NUMBER;
+
+  -- function to get scrapped quantity
+  FUNCTION get_scrapped_qty(item_id_ IN NUMBER) RETURN NUMBER;
+
+  -- function to get reserved quantity
+  FUNCTION get_reserved_qty(item_id_ IN NUMBER) RETURN NUMBER;
+END umair_fooditem_api;
+/

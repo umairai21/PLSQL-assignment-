@@ -1,0 +1,6 @@
+DECLARE
+BEGIN
+     umair_branch_api.INSERT_BRANCH('1', 'Test Branch', 'Test Branch Address', 'Test Branch Manager', '1000');
+     umair_branch_api.INSERT_BRANCH('1', 'Kandy Warehouse', 'KANDY', 'John', '2000');
+END;
+/

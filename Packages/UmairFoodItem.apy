@@ -1,0 +1,107 @@
+CREATE OR REPLACE PACKAGE BODY umair_fooditem_api AS
+
+-- create foodItem
+  PROCEDURE INSERT_FOODITEM(item_name_        IN VARCHAR2,
+                            available_qty_kg_ IN NUMBER,
+                            scrapped_qty_kg_  IN NUMBER,
+                            reserved_qty_kg_  IN NUMBER) IS
+  BEGIN
+    INSERT INTO umair_fooditem_tab
+      (item_name, available_qty_kg, scrapped_qty_kg, reserved_qty_kg)
+    VALUES
+      (item_name_, available_qty_kg_, scrapped_qty_kg_, reserved_qty_kg_);
+  END INSERT_FOODITEM;
+
+  -- update foodItem
+  PROCEDURE UPDATE_FOODITEM(item_id_           IN NUMBER,
+                            new_item_name_     IN VARCHAR2,
+                            new_available_qty_ IN NUMBER,
+                            new_scrapped_qty_  IN NUMBER,
+                            new_reserved_qty_  IN NUMBER) IS
+  BEGIN
+    UPDATE umair_fooditem_tab
+       SET item_name        = new_item_name_,
+           available_qty_kg = new_available_qty_,
+           scrapped_qty_kg  = new_scrapped_qty_,
+           reserved_qty_kg  = new_reserved_qty_
+     WHERE item_id = item_id_;
+  END UPDATE_FOODITEM;
+
+  -- delete foodItem
+  PROCEDURE DELETE_FOODITEM(item_id_ IN NUMBER) IS
+  BEGIN
+    DELETE FROM umair_fooditem_tab WHERE item_id = item_id_;
+  END DELETE_FOODITEM;
+
+  -- function to get item name 
+  FUNCTION get_fooditem_name(item_id_ IN NUMBER) RETURN VARCHAR2 IS
+    b_result_ VARCHAR2(200);
+  
+    CURSOR get_fooditem_attri IS
+      SELECT item_name FROM umair_fooditem_tab WHERE item_id = item_id_;
+  
+  BEGIN
+    OPEN get_fooditem_attri;
+    FETCH get_fooditem_attri
+      INTO b_result_;
+    CLOSE get_fooditem_attri;
+  
+    RETURN b_result_;
+  END get_fooditem_name;
+
+   -- function to get available quantity
+  FUNCTION get_available_qty(item_id_ IN NUMBER) RETURN NUMBER IS
+    b_result_ NUMBER;
+  
+    CURSOR get_available_qty_attri IS
+      SELECT available_qty_kg
+        FROM umair_fooditem_tab
+       WHERE item_id = item_id_;
+  
+  BEGIN
+    OPEN get_available_qty_attri;
+    FETCH get_available_qty_attri
+      INTO b_result_;
+    CLOSE get_available_qty_attri;
+  
+    RETURN b_result_;
+  END get_available_qty;
+
+  -- function to get scrapped quantity
+  FUNCTION get_scrapped_qty(item_id_ IN NUMBER) RETURN NUMBER IS
+    b_result_ NUMBER;
+  
+    CURSOR get_scrapped_qty_attri IS
+      SELECT scrapped_qty_kg
+        FROM umair_fooditem_tab
+       WHERE item_id = item_id_;
+  
+  BEGIN
+    OPEN get_scrapped_qty_attri;
+    FETCH get_scrapped_qty_attri
+      INTO b_result_;
+    CLOSE get_scrapped_qty_attri;
+  
+    RETURN b_result_;
+  END get_scrapped_qty;
+
+  -- function to get reserved quantity
+  FUNCTION get_reserved_qty(item_id_ IN NUMBER) RETURN NUMBER IS
+    b_result_ NUMBER;
+  
+    CURSOR get_reserved_qty_attri IS
+      SELECT reserved_qty_kg
+        FROM umair_fooditem_tab
+       WHERE item_id = item_id_;
+  
+  BEGIN
+    OPEN get_reserved_qty_attri;
+    FETCH get_reserved_qty_attri
+      INTO b_result_;
+    CLOSE get_reserved_qty_attri;
+  
+    RETURN b_result_;
+  END get_reserved_qty;
+
+END umair_fooditem_api;
+/

@@ -1,0 +1,43 @@
+CREATE OR REPLACE PACKAGE umair_branch_api AS
+
+  -- create branch
+  PROCEDURE INSERT_BRANCH(company_id_               IN NUMBER,
+                          branch_name_              IN VARCHAR2,
+                          branch_address_           IN VARCHAR2,
+                          branch_manager_           IN VARCHAR2,
+                          total_warehouse_capacity_ IN NUMBER);
+
+  -- update branch
+  PROCEDURE UPDATE_BRANCH(company_id_         IN NUMBER,
+                          branch_id_          IN NUMBER,
+                          new_branch_name_    IN VARCHAR2,
+                          new_branch_address_ IN VARCHAR2,
+                          new_branch_manager_ IN VARCHAR2,
+                          new_total_capacity_ IN NUMBER);
+
+  -- delete branch
+  PROCEDURE DELETE_BRANCH(branch_id_ IN NUMBER);
+
+  -- function to get branch name
+  FUNCTION get_branch_name(company_id_ IN NUMBER, branch_id_ IN NUMBER)
+    RETURN VARCHAR2;
+
+  -- function to get branch address
+  FUNCTION get_branch_address(company_id_ IN NUMBER, branch_id_ IN NUMBER)
+    RETURN VARCHAR2;
+
+  -- function to get branch manager
+  FUNCTION get_branch_manager(company_id_ IN NUMBER, branch_id_ IN NUMBER)
+    RETURN VARCHAR2;
+
+  -- function to get total warehouse capacity
+  FUNCTION get_total_capacity(company_id_ IN NUMBER, branch_id_ IN NUMBER)
+    RETURN NUMBER;
+
+  -- function to get remaining warehouse capacity
+  FUNCTION get_remaining_capacity(branch_id_  IN NUMBER, company_id_ IN NUMBER) 
+    RETURN NUMBER;
+    
+    
+END umair_branch_api;
+/

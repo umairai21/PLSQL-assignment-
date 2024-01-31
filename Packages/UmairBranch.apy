@@ -1,0 +1,153 @@
+CREATE OR REPLACE PACKAGE BODY umair_branch_api AS
+
+  -- create branch
+  PROCEDURE INSERT_BRANCH(company_id_               IN NUMBER,
+                          branch_name_              IN VARCHAR2,
+                          branch_address_           IN VARCHAR2,
+                          branch_manager_           IN VARCHAR2,
+                          total_warehouse_capacity_ IN NUMBER) IS
+  BEGIN
+    INSERT INTO umair_branch_tab
+      (company_id,
+       branch_name,
+       branch_address,
+       branch_manager,
+       total_warehouse_capacity)
+    VALUES
+      (company_id_,
+       branch_name_,
+       branch_address_,
+       branch_manager_,
+       total_warehouse_capacity_);
+  END INSERT_BRANCH;
+
+  -- update branch
+  PROCEDURE UPDATE_BRANCH(company_id_         IN NUMBER,
+                          branch_id_          IN NUMBER,
+                          new_branch_name_    IN VARCHAR2,
+                          new_branch_address_ IN VARCHAR2,
+                          new_branch_manager_ IN VARCHAR2,
+                          new_total_capacity_ IN NUMBER) IS
+  BEGIN
+    UPDATE umair_branch_tab
+       SET branch_name              = new_branch_name_,
+           branch_address           = new_branch_address_,
+           branch_manager           = new_branch_manager_,
+           total_warehouse_capacity = new_total_capacity_
+     WHERE branch_id = branch_id_;
+  END UPDATE_BRANCH;
+
+  -- delete branch
+  PROCEDURE DELETE_BRANCH(branch_id_ IN NUMBER) IS
+  BEGIN
+    DELETE FROM umair_branch_tab WHERE branch_id = branch_id_;
+  END DELETE_BRANCH;
+
+  -- function to get branch name
+  FUNCTION get_branch_name(company_id_ IN NUMBER, branch_id_ IN NUMBER)
+    RETURN VARCHAR2 IS
+    P_result_ VARCHAR2(100);
+  
+    CURSOR get_branch_name_attri IS
+      SELECT branch_name
+        FROM umair_branch_tab
+       WHERE company_id = company_id_ AND branch_id = branch_id_;
+  
+  BEGIN
+    OPEN get_branch_name_attri;
+    FETCH get_branch_name_attri
+      INTO p_result_;
+    CLOSE get_branch_name_attri;
+  
+    RETURN p_result_;
+  END get_branch_name;
+
+  -- function to get branch address
+  FUNCTION get_branch_address(company_id_ IN NUMBER, branch_id_ IN NUMBER)
+    RETURN VARCHAR2 IS
+    P_result_ VARCHAR2(1000);
+  
+    CURSOR get_branch_address_attri IS
+      SELECT branch_address
+        FROM umair_branch_tab
+       WHERE company_id = company_id_ AND branch_id = branch_id_;
+  
+  BEGIN
+    OPEN get_branch_address_attri;
+    FETCH get_branch_address_attri
+      INTO p_result_;
+    CLOSE get_branch_address_attri;
+  
+    RETURN p_result_;
+  END get_branch_address;
+
+  -- function to get branch manager
+  FUNCTION get_branch_manager(company_id_ IN NUMBER, branch_id_ IN NUMBER)
+    RETURN VARCHAR2 IS
+    P_result_ VARCHAR2(50);
+  
+    CURSOR get_branch_manager_attri IS
+      SELECT branch_manager
+        FROM umair_branch_tab
+       WHERE company_id = company_id_ AND branch_id = branch_id_;
+  
+  BEGIN
+    OPEN get_branch_manager_attri;
+    FETCH get_branch_manager_attri
+      INTO p_result_;
+    CLOSE get_branch_manager_attri;
+  
+    RETURN p_result_;
+  END get_branch_manager;
+
+  -- function to get total warehouse capacity
+  FUNCTION get_total_capacity(company_id_ IN NUMBER, branch_id_ IN NUMBER)
+    RETURN NUMBER IS
+    P_result_ NUMBER;
+  
+    CURSOR get_total_capacity_attri IS
+      SELECT total_warehouse_capacity
+        FROM umair_branch_tab
+       WHERE company_id = company_id_ AND branch_id = branch_id_;
+  
+  BEGIN
+    OPEN get_total_capacity_attri;
+    FETCH get_total_capacity_attri
+      INTO p_result_;
+    CLOSE get_total_capacity_attri;
+  
+    RETURN p_result_;
+  END get_total_capacity;
+
+  -- function to get remaining warehouse capacity
+  FUNCTION get_remaining_capacity(branch_id_  IN NUMBER,
+                                  company_id_ IN NUMBER) RETURN NUMBER IS
+    total_capacity_     NUMBER;
+    used_capacity_      NUMBER;
+    remaining_capacity_ NUMBER;
+  
+    CURSOR used_capacity_attri IS
+      SELECT COUNT(*)
+        FROM umair_container_tab
+       WHERE branch_id = branch_id_;
+  
+  BEGIN
+  
+    total_capacity_ := get_total_capacity(branch_id_, company_id_);
+  
+    OPEN used_capacity_attri;
+    FETCH used_capacity_attri
+      INTO used_capacity_;
+    CLOSE used_capacity_attri;
+  
+    -- Calculating remaining warehouse capacity
+    remaining_capacity_ := total_capacity_ - used_capacity_;
+  
+    RETURN remaining_capacity_;
+  EXCEPTION
+    WHEN NO_DATA_FOUND THEN
+      RETURN NULL;
+  END get_remaining_capacity;
+
+END umair_branch_api;
+/

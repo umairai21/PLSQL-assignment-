@@ -1,0 +1,20 @@
+CREATE OR REPLACE PACKAGE umair_storage_api AS
+
+  -- create_storage
+  PROCEDURE INSERT_STORAGE(item_id_      IN NUMBER,
+                           container_id_ IN VARCHAR2,
+                           status_       IN VARCHAR2);
+
+  -- update_storage
+  PROCEDURE UPDATE_STORAGE(item_id_      IN NUMBER,
+                           container_id_ IN VARCHAR2,
+                           status_       IN VARCHAR2);
+
+  -- delete_storage
+  PROCEDURE DELETE_STORAGE(item_id_ IN NUMBER, container_id_ IN NUMBER);
+
+  -- function to get status
+  FUNCTION get_status(item_id_ IN NUMBER, container_id_ IN VARCHAR2)
+    RETURN VARCHAR2;
+END umair_storage_api;
+/

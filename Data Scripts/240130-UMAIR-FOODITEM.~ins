@@ -1,0 +1,4 @@
+DECLARE
+BEGIN
+     umair_fooditem_api.INSERT_FOODITEM( 'Test Food Item 2', '350', '35', '100');
+END;

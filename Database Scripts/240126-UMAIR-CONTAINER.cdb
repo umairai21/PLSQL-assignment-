@@ -1,0 +1,11 @@
+CREATE TABLE umair_container_tab (
+  company_id NUMBER,
+  branch_id NUMBER,
+  container_id VARCHAR2(30),
+  current_weight NUMBER NOT NULL,
+  current_volume NUMBER NOT NULL,
+  max_weight NUMBER NOT NULL,
+  max_volume NUMBER NOT NULL,
+  PRIMARY KEY (company_id, branch_id, container_id)
+);
+

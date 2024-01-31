@@ -1,0 +1,88 @@
+CREATE OR REPLACE PACKAGE BODY umair_company_api AS
+
+  -- create company
+  PROCEDURE INSERT_COMPANY(company_reg_no_  IN VARCHAR2,
+                           company_name_    IN VARCHAR2,
+                           company_address_ IN VARCHAR2) IS
+  BEGIN
+    INSERT INTO umair_company_tab
+      (company_reg_no, company_name, company_address)
+    VALUES
+      (company_reg_no_, company_name_, company_address_);
+  END INSERT_COMPANY;
+
+  -- update company
+  PROCEDURE UPDATE_COMPANY(company_id_          IN NUMBER,
+                           new_company_reg_no_  IN VARCHAR2,
+                           new_company_name_    IN VARCHAR2,
+                           new_company_address_ IN VARCHAR2) IS
+  BEGIN
+    UPDATE umair_company_tab
+       SET company_reg_no  = new_company_reg_no_,
+           company_name    = new_company_name_,
+           company_address = new_company_address_
+     WHERE company_id = company_id_;
+  END UPDATE_COMPANY;
+
+  -- delete company
+  PROCEDURE DELETE_COMPANY(company_id_ IN NUMBER) IS
+  BEGIN
+    DELETE FROM umair_company_tab WHERE company_id = company_id_;
+  END DELETE_COMPANY;
+
+  -- function to get company registration number
+  FUNCTION get_company_reg_no(company_id_ IN NUMBER) RETURN VARCHAR2 IS
+    result_ VARCHAR2(100);
+  
+    CURSOR get_comp_reg_no IS
+      SELECT company_reg_no
+        FROM umair_company_tab
+       WHERE company_id = company_id_;
+  
+  BEGIN
+    OPEN get_comp_reg_no;
+    FETCH get_comp_reg_no
+      INTO result_;
+    CLOSE get_comp_reg_no;
+  
+    RETURN result_;
+  END get_company_reg_no;
+
+  -- function to get company name
+  FUNCTION get_company_name(company_id_ IN NUMBER) RETURN VARCHAR2 IS
+    result_ VARCHAR2(200);
+  
+    CURSOR get_comp_name IS
+      SELECT company_name
+        FROM umair_company_tab
+       WHERE company_id = company_id_;
+  
+  BEGIN
+    OPEN get_comp_name;
+    FETCH get_comp_name
+      INTO result_;
+    CLOSE get_comp_name;
+  
+    RETURN result_;
+  END get_company_name;
+
+  -- function to get company address
+  FUNCTION get_company_address(company_id_ IN NUMBER) RETURN VARCHAR2 IS
+    result_ VARCHAR2(1000);
+  
+    CURSOR get_comp_address IS
+      SELECT company_address
+        FROM umair_company_tab
+       WHERE company_id = company_id_;
+  
+  BEGIN
+    OPEN get_comp_address;
+    FETCH get_comp_address
+      INTO result_;
+    CLOSE get_comp_address;
+  
+    RETURN result_;
+  END get_company_address;
+
+END umair_company_api;
+/

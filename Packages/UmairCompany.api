@@ -1,0 +1,27 @@
+CREATE OR REPLACE PACKAGE umair_company_api AS
+
+  -- create company
+  PROCEDURE INSERT_COMPANY(company_reg_no_  IN VARCHAR2,
+                           company_name_    IN VARCHAR2,
+                           company_address_ IN VARCHAR2);
+
+  -- update company
+  PROCEDURE UPDATE_COMPANY(company_id_          IN NUMBER,
+                           new_company_reg_no_  IN VARCHAR2,
+                           new_company_name_    IN VARCHAR2,
+                           new_company_address_ IN VARCHAR2);
+
+  -- delete company
+  PROCEDURE DELETE_COMPANY(company_id_ IN NUMBER);
+
+  -- function to get company registration number
+  FUNCTION get_company_reg_no(company_id_ IN NUMBER) RETURN VARCHAR2;
+
+  -- function to get company name
+  FUNCTION get_company_name(company_id_ IN NUMBER) RETURN VARCHAR2;
+
+  -- function to get company address
+  FUNCTION get_company_address(company_id_ IN NUMBER) RETURN VARCHAR2;
+
+END umair_company_api;
+/

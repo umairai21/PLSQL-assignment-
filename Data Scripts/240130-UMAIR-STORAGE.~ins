@@ -1,0 +1,4 @@
+DECLARE
+BEGIN
+     umair_storage_api.INSERT_STORAGE('1','C01','Available');
+END;

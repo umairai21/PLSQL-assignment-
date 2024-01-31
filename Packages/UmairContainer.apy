@@ -1,0 +1,138 @@
+CREATE OR REPLACE PACKAGE BODY umair_container_api AS
+
+  -- create container
+  PROCEDURE INSERT_CONTAINER(company_id_     IN NUMBER,
+                             branch_id_      IN NUMBER,
+                             container_id_   IN VARCHAR2,
+                             current_weight_ IN NUMBER,
+                             current_volume_ IN NUMBER,
+                             max_weight_     IN NUMBER,
+                             max_volume_     IN NUMBER) IS
+  BEGIN
+    INSERT INTO umair_container_tab
+      (company_id,
+       branch_id,
+       container_id,
+       current_weight,
+       current_volume,
+       max_weight,
+       max_volume)
+    VALUES
+      (company_id_,
+       branch_id_,
+       container_id_,
+       current_weight_,
+       current_volume_,
+       max_weight_,
+       max_volume_);
+  END INSERT_CONTAINER;
+
+  -- update container
+  PROCEDURE UPDATE_CONTAINER(company_id_         IN NUMBER,
+                             branch_id_          IN NUMBER,
+                             container_id_       IN VARCHAR2,
+                             new_current_weight_ IN NUMBER,
+                             new_current_volume_ IN NUMBER,
+                             new_max_weight_     IN NUMBER,
+                             new_max_volume_     IN NUMBER) IS
+  BEGIN
+    UPDATE umair_container_tab
+       SET current_weight = new_current_weight_,
+           current_volume = new_current_volume_,
+           max_weight     = new_max_weight_,
+           max_volume     = new_max_volume_
+     WHERE container_id = container_id_;
+  END UPDATE_CONTAINER;
+
+  -- delete container
+  PROCEDURE DELETE_CONTAINER(container_id_ IN NUMBER) IS
+  BEGIN
+    DELETE FROM umair_container_tab WHERE container_id = container_id_;
+  END DELETE_CONTAINER;
+
+  -- function to get current weight attribute
+  FUNCTION get_current_weight(
+                              branch_id_    IN NUMBER,
+                              container_id_ IN VARCHAR2) RETURN NUMBER IS
+    a_result_ NUMBER;
+  
+    CURSOR get_curr_weight_attri IS
+      SELECT current_weight
+        FROM umair_container_tab
+       WHERE branch_id = branch_id_ AND
+             container_id = container_id_;
+  
+  BEGIN
+    OPEN get_curr_weight_attri;
+    FETCH get_curr_weight_attri
+      INTO a_result_;
+    CLOSE get_curr_weight_attri;
+  
+    RETURN a_result_;
+  END get_current_weight;
+
+  -- function to get current volume attribute
+  FUNCTION get_current_volume(
+                              branch_id_    IN NUMBER,
+                              container_id_ IN VARCHAR2) RETURN NUMBER IS
+    a_result_ NUMBER;
+  
+    CURSOR get_current_volume_attri IS
+      SELECT current_volume
+        FROM umair_container_tab
+       WHERE  branch_id = branch_id_ AND
+             container_id = container_id_;
+  
+  BEGIN
+    OPEN get_current_volume_attri;
+    FETCH get_current_volume_attri
+      INTO a_result_;
+    CLOSE get_current_volume_attri;
+  
+    RETURN a_result_;
+  END get_current_volume;
+
+  -- function to get max weight attribute
+  FUNCTION get_max_weight(
+                          branch_id_    IN NUMBER,
+                          container_id_ IN VARCHAR2) RETURN NUMBER IS
+    a_result_ NUMBER;
+  
+    CURSOR get_max_weight_attri IS
+      SELECT max_weight
+        FROM umair_container_tab
+       WHERE  branch_id = branch_id_ AND
+             container_id = container_id_;
+  
+  BEGIN
+    OPEN get_max_weight_attri;
+    FETCH get_max_weight_attri
+      INTO a_result_;
+    CLOSE get_max_weight_attri;
+  
+    RETURN a_result_;
+  END get_max_weight;
+
+  -- function to get max volume attribute
+  FUNCTION get_max_volume(
+                          branch_id_    IN NUMBER,
+                          container_id_ IN VARCHAR2) RETURN NUMBER IS
+    a_result_ NUMBER;
+  
+    CURSOR get_max_volume_attri IS
+      SELECT max_volume
+        FROM umair_container_tab
+       WHERE  branch_id = branch_id_ AND
+             container_id = container_id_;
+  
+  BEGIN
+    OPEN get_max_volume_attri;
+    FETCH get_max_volume_attri
+      INTO a_result_;
+    CLOSE get_max_volume_attri;
+  
+    RETURN a_result_;
+  END get_max_volume;
+
+END umair_container_api;
+/

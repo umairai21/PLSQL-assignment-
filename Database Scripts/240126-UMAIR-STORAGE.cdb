@@ -1,0 +1,6 @@
+CREATE TABLE umair_storage_tab (
+    item_id NUMBER,
+    container_id VARCHAR2(30),
+    status VARCHAR2(50) NOT NULL,
+    PRIMARY KEY (item_id,container_id)
+);
