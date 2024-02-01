@@ -1,6 +1,6 @@
 CREATE OR REPLACE PACKAGE BODY umair_branch_api AS
 
--- create_branch
+  -- create branch
   PROCEDURE INSERT_BRANCH(company_id_               IN NUMBER,
                           branch_name_              IN VARCHAR2,
                           branch_address_           IN VARCHAR2,
@@ -21,7 +21,7 @@ CREATE OR REPLACE PACKAGE BODY umair_branch_api AS
        total_warehouse_capacity_);
   END INSERT_BRANCH;
 
-   -- update_branch
+  -- update branch
   PROCEDURE UPDATE_BRANCH(company_id_         IN NUMBER,
                           branch_id_          IN NUMBER,
                           new_branch_name_    IN VARCHAR2,
@@ -37,13 +37,40 @@ CREATE OR REPLACE PACKAGE BODY umair_branch_api AS
      WHERE branch_id = branch_id_;
   END UPDATE_BRANCH;
 
-  -- delete_branch
+  -- delete branch
   PROCEDURE DELETE_BRANCH(branch_id_ IN NUMBER) IS
   BEGIN
     DELETE FROM umair_branch_tab WHERE branch_id = branch_id_;
   END DELETE_BRANCH;
+  
+  
+    -- procedure to display current inventory information
+  PROCEDURE current_inventory_info(branch_id_ IN NUMBER) IS
+    CURSOR inventory_info IS
+      SELECT uf.item_name, uf.available_qty_kg
+        FROM umair_fooditem_tab uf
+             JOIN umair_storage_tab us ON uf.item_id = us.item_id
+             JOIN umair_container_tab uc ON us.container_id = uc.container_id
+       WHERE uc.branch_id = branch_id_;
+  
+    v_item_name VARCHAR2(200);
+    v_available_qty NUMBER;
+  BEGIN
+    FOR info IN inventory_info LOOP
+      v_item_name := info.item_name;
+      v_available_qty := info.available_qty_kg;
 
-  -- function to get branch_name
+      -- Print or display the information as needed
+      DBMS_OUTPUT.PUT_LINE('Item Name: ' || v_item_name || ', Available Quantity: ' || v_available_qty);
+    END LOOP;
+  EXCEPTION
+    WHEN OTHERS THEN
+      DBMS_OUTPUT.PUT_LINE('Error: ' || SQLERRM);
+  END current_inventory_info;
+
+  
+
+  -- function to get branch name
   FUNCTION get_branch_name(company_id_ IN NUMBER, branch_id_ IN NUMBER)
     RETURN VARCHAR2 IS
     P_result_ VARCHAR2(100);
@@ -62,7 +89,7 @@ CREATE OR REPLACE PACKAGE BODY umair_branch_api AS
     RETURN p_result_;
   END get_branch_name;
 
-  -- function to get branch_address
+  -- function to get branch address
   FUNCTION get_branch_address(company_id_ IN NUMBER, branch_id_ IN NUMBER)
     RETURN VARCHAR2 IS
     P_result_ VARCHAR2(1000);
@@ -81,10 +108,10 @@ CREATE OR REPLACE PACKAGE BODY umair_branch_api AS
     RETURN p_result_;
   END get_branch_address;
 
-  -- function to get branch_manager
+  -- function to get branch manager
   FUNCTION get_branch_manager(company_id_ IN NUMBER, branch_id_ IN NUMBER)
     RETURN VARCHAR2 IS
-    P_result_ VARCHAR2(100);
+    P_result_ VARCHAR2(50);
   
     CURSOR get_branch_manager_attri IS
       SELECT branch_manager
@@ -100,7 +127,7 @@ CREATE OR REPLACE PACKAGE BODY umair_branch_api AS
     RETURN p_result_;
   END get_branch_manager;
 
-   -- function to get total_capacity
+  -- function to get total warehouse capacity
   FUNCTION get_total_capacity(company_id_ IN NUMBER, branch_id_ IN NUMBER)
     RETURN NUMBER IS
     P_result_ NUMBER;
@@ -118,37 +145,43 @@ CREATE OR REPLACE PACKAGE BODY umair_branch_api AS
   
     RETURN p_result_;
   END get_total_capacity;
+
+ -- function to get remaining_capacity
+ FUNCTION get_remaining_capacity(branch_id_  IN NUMBER,
+                                 company_id_ IN NUMBER) RETURN NUMBER IS
+   total_capacity_     NUMBER;
+   used_capacity_      NUMBER;
+   remaining_capacity_ NUMBER;
+ 
+   CURSOR used_capacity_cursor IS
+     SELECT SUM(max_volume) AS used_volume
+       FROM umair_container_tab
+      WHERE container_id IN (SELECT container_id FROM umair_storage_tab) AND
+            branch_id = branch_id_;
+ 
+ BEGIN
+   -- Use existing function to get total capacity of the branch
+   total_capacity_ := get_total_capacity(branch_id_, company_id_);
+ 
+   -- Declare a cursor to fetch the count of containers in the branch
+   OPEN used_capacity_cursor;
+   FETCH used_capacity_cursor
+     INTO used_capacity_;
+   CLOSE used_capacity_cursor;
+ 
+   -- Calculate remaining capacity
+   remaining_capacity_ := total_capacity_ - used_capacity_;
+ 
+   RETURN remaining_capacity_;
+ EXCEPTION
+   WHEN NO_DATA_FOUND THEN
+     RETURN NULL;
+ END get_remaining_capacity;
   
-  -- function to get remaining_capacity
-  FUNCTION get_remaining_capacity(branch_id_  IN NUMBER,
-                                  company_id_ IN NUMBER) RETURN NUMBER IS
-    total_capacity_     NUMBER;
-    used_capacity_  NUMBER;
-    remaining_capacity_ NUMBER;
   
-    CURSOR used_capacity_attri IS
-      SELECT COUNT(*)
-        FROM umair_container_tab
-       WHERE branch_id = branch_id_;
+
+
   
-  BEGIN
-    -- Use existing function to get total capacity of the branch
-    total_capacity_ := get_total_capacity(branch_id_, company_id_);
-  
-    -- Declare a cursor to fetch the count of containers in the branch
-    OPEN used_capacity_attri;
-    FETCH used_capacity_attri
-      INTO used_capacity_;
-    CLOSE used_capacity_attri;
-  
-    -- Calculate remaining capacity
-    remaining_capacity_ := total_capacity_ - used_capacity_;
-  
-    RETURN remaining_capacity_;
-  EXCEPTION
-    WHEN NO_DATA_FOUND THEN
-      RETURN NULL;
-  END get_remaining_capacity;
 
 END umair_branch_api;
 /

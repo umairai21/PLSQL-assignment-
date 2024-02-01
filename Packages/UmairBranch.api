@@ -17,6 +17,10 @@ CREATE OR REPLACE PACKAGE umair_branch_api AS
 
   -- delete branch
   PROCEDURE DELETE_BRANCH(branch_id_ IN NUMBER);
+  
+  --Procedure to get current inventory information
+  PROCEDURE current_inventory_info(branch_id_ IN NUMBER);
+  
 
   -- function to get branch name
   FUNCTION get_branch_name(company_id_ IN NUMBER, branch_id_ IN NUMBER)
